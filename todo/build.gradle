@@ -24,8 +24,8 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
@@ -34,6 +34,16 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // JSP 엔진(Tomcat Jasper)
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	// JSTL
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0'
+	runtimeOnly 'org.glassfish.web:jakarta.servlet.jsp.jstl:2.0.0'
+    
+	
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2' // swagger
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2' //swagger
+	
 }
 
 tasks.named('test') {
