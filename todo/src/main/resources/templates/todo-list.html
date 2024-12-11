@@ -24,34 +24,33 @@
         <div class="card" id="list1" style="border-radius: .75rem; background-color: #eff1f2;">
           <div class="card-body py-4 px-4 px-md-5">
 
-            <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
-              <i class="fas fa-check-square me-1"></i>
-              <u>Todo list</u>
-            </p>
+            <!-- 현재 날짜와 시간 표시 -->
+            <div class="text-center mb-4">
+              <p id="current-date" class="display-6 fw-bold text-black"></p>
+              <p id="current-time" class="h5 text-black"></p>
+            </div>
 
             <div class="pb-2">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-row align-items-center">
-					<form th:action="@{/todos}" th:object="${todo}" method="post" class="d-flex flex-row w-100">
-					    <input type="text" class="form-control form-control-lg me-3" th:field="*{title}" placeholder="일정을 추가해주세요." required />
-					    <textarea class="form-control form-control-lg me-3" th:field="*{description}" placeholder="설명을 입력하세요."></textarea>
-					    <button type="submit" class="btn btn-primary">등록</button>
-					</form>
+                    <form th:action="@{/todos}" th:object="${todo}" method="post" class="d-flex flex-row w-100">
+                        <input type="text" class="form-control form-control-lg me-3" th:field="*{title}" placeholder="일정을 추가해주세요." required />
+                        <textarea class="form-control form-control-lg me-3" th:field="*{description}" placeholder="설명을 입력하세요."></textarea>
+                        <input type="text" class="form-control form-control-lg me-3" th:field="*{tag}" placeholder="태그 (예: 업무, 개인)" />
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </form>
                   </div>
                 </div>
               </div>
             </div>
 
             <hr class="my-4">
-
+            
             <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
               <p class="small mb-0 me-2 text-muted">필터</p>
-              <select data-mdb-select-init>
-                <option value="1">모두</option>
-                <option value="2">완료</option>
-                <option value="3">진행중</option>
-                <option value="4">전날</option>
+              <select id="filter-tag" class="form-select w-auto">
+                <option value="all">모두</option>
               </select>
               <p class="small mb-0 ms-4 me-2 text-muted">정렬</p>
               <select data-mdb-select-init>
@@ -62,26 +61,22 @@
                   class="fas fa-sort-amount-down-alt ms-2"></i></a>
             </div>
 
-            <ul class="list-group list-group-flush">
-				<li th:if="${todos.isEmpty()}" class="list-group-item text-center">
-				    <p class="text-muted">일정을 추가해주세요!</p>
-				</li>
-              <li th:each="todo : ${todos}" class="list-group-item d-flex align-items-center">
+            <ul id="todo-list" class="list-group list-group-flush">
+              <li th:if="${todos.isEmpty()}" class="list-group-item text-center">
+                <p class="text-muted">일정을 추가해주세요!</p>
+              </li>
+              <li th:each="todo : ${todos}" class="list-group-item d-flex align-items-center" data-id="${todo.id}" data-tag="${todo.tag}">
                 <div class="form-check">
-                  <input class="form-check-input me-3" type="checkbox" th:checked="${todo.status == 'COMPLETED'}"/>
+                  <input class="form-check-input me-3 toggle-status" type="checkbox" th:checked="${todo.status == 'COMPLETED'}" />
                 </div>
                 <div class="flex-grow-1">
-                  <p class="lead fw-normal mb-0" th:text="${todo.title}"></p>
-                  <p class="small text-muted mb-0" th:text="${todo.description}"></p>
+                  <p class="lead fw-normal mb-0 editable-title" contenteditable="true" th:text="${todo.title}"></p>
+                  <p class="small text-muted mb-0 editable-description" contenteditable="true" th:text="${todo.description}"></p>
+                  <span class="badge bg-secondary" th:text="${todo.tag}"></span>
                 </div>
                 <div>
-                  <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
-                  </form>
-                  <form th:action="@{/todos/{id}/status(id=${todo.id})}" method="post" class="d-inline">
-                    <input type="hidden" name="status" th:value="${todo.status == 'COMPLETED' ? 'PENDING' : 'COMPLETED'}" />
-                    <button type="submit" class="btn btn-info btn-sm">상태 변경</button>
-                  </form>
+                  <button class="btn btn-info btn-sm edit-todo">수정</button>
+                  <button class="btn btn-danger btn-sm delete-todo">삭제</button>
                 </div>
               </li>
             </ul>
@@ -92,6 +87,72 @@
     </div>
   </div>
 </section>
+
+<script>
+  // 현재 날짜와 시간을 표시하는 함수
+  function updateCurrentDateTime() {
+    const currentDateElement = document.getElementById('current-date');
+    const currentTimeElement = document.getElementById('current-time');
+    const now = new Date();
+
+    // 날짜 형식: Month Day, Year
+    const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // 시간 형식: HH:MM:SS
+    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+    currentDateElement.textContent = date;
+    currentTimeElement.textContent = time;
+  }
+
+  // 태그별 필터링 함수
+  function filterByTag() {
+    const selectedTag = document.getElementById('filter-tag').value;
+    const todos = document.querySelectorAll('#todo-list .list-group-item');
+
+    todos.forEach(todo => {
+      const todoTag = todo.getAttribute('data-tag');
+      if (selectedTag === 'all' || todoTag === selectedTag) {
+        todo.style.display = 'flex';
+      } else {
+        todo.style.display = 'none';
+      }
+    });
+  }
+
+  // 태그 목록 초기화
+  function initializeTagFilter() {
+    const tagSet = new Set();
+    const todos = document.querySelectorAll('#todo-list .list-group-item');
+
+    todos.forEach(todo => {
+      const todoTag = todo.getAttribute('data-tag');
+      if (todoTag) {
+        tagSet.add(todoTag);
+      }
+    });
+
+    const filterTagElement = document.getElementById('filter-tag');
+    tagSet.forEach(tag => {
+      const option = document.createElement('option');
+      option.value = tag;
+      option.textContent = tag;
+      filterTagElement.appendChild(option);
+    });
+  }
+
+  // 페이지 로드 시 날짜 및 시간 업데이트, 태그 필터 초기화
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCurrentDateTime();
+    setInterval(updateCurrentDateTime, 1000); // 1초마다 갱신
+    initializeTagFilter();
+
+    // 태그 필터 이벤트 리스너
+    document.getElementById('filter-tag').addEventListener('change', filterByTag);
+  });
+</script>
+
+<script src="/js/todos.js"></script>
 
 </body>
 </html>

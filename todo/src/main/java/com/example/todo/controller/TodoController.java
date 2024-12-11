@@ -1,12 +1,16 @@
 package com.example.todo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,15 +37,16 @@ public class TodoController {
         return "redirect:/todos";
     }
 
-    @PostMapping("/{id}/status")
-    public String updateTodoStatus(@PathVariable Long id, @RequestParam("status") Todo.Status status) {
-        todoService.updateTodoStatus(id, status);
-        return "redirect:/todos";
+    @PutMapping("/{id}")
+    public ResponseEntity<Todo> updateStatus(@PathVariable Long id, @RequestBody Todo updatedTodo) {
+        Todo todo = todoService.updateStatus(id, updatedTodo.getStatus());
+        return ResponseEntity.ok(todo);
     }
 
-    @PostMapping("/{id}/delete")
-    public String deleteTodo(@PathVariable Long id) {
-        todoService.deleteTodo(id);
-        return "redirect:/todos";
+    @DeleteMapping("/api/todos/{id}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+        todoService.delete(id);
+        return ResponseEntity.noContent().build(); // 성공적으로 삭제되었으면 204 No Content 응답
     }
+
 }

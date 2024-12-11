@@ -8,3 +8,8 @@
 #list1 .select-input.form-control[readonly]:not([disabled]) {
   background-color: #fbfbfb;
 }
+
+li.removed {
+  transition: opacity 0.5s ease-out;
+  opacity: 0;
+}
