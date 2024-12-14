@@ -1,47 +1,23 @@
 package com.example.todo.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.todo.entity.Todo;
-import com.example.todo.repository.TodoRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Service
-public class TodoService {
+public interface TodoService {
 
-    @Autowired
-    private TodoRepository todoRepository;
+    // 전체 할 일 목록을 가져오는 메서드
+    List<Todo> findAll();
 
-    public List<Todo> getAllTodos() {
-        return todoRepository.findAll();
-    }
+    // ID로 특정 할 일을 가져오는 메서드
+    Todo findById(Long id);
 
-    public Todo addTodo(Todo todo) {
-        return todoRepository.save(todo);
-    }
+    // 새로운 할 일을 추가하는 메서드
+    Todo save(Todo todo);
 
-    public Todo updateStatus(Long id, Todo.Status status) {
-        Todo todo = todoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Todo not found"));
-        todo.setStatus(status);
-        return todoRepository.save(todo);
-    }
+    // 할 일을 삭제하는 메서드
+    void deleteById(Long id);
 
-    public void deleteTodoById(Long id) {
-        todoRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Todo ID: " + id));
-        todoRepository.delete(todo);
-    }
-
+    // ID로 할 일을 수정하는 메서드
+    Todo updateById(Long id, Todo updatedTodo);
 }

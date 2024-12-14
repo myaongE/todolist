@@ -13,3 +13,7 @@ li.removed {
   transition: opacity 0.5s ease-out;
   opacity: 0;
 }
+
+.form-check-label {
+    white-space: nowrap;  /* 텍스트가 한 줄에 표시되도록 설정 */
+}

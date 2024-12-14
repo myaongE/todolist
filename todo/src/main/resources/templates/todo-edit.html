@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정 수정</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">일정 수정</h1>
+        
+        <form th:action="@{/todos/{id}/edit(id=${todo.id})}" th:object="${todo}" method="post">
+            <!-- 제목 입력 필드 -->
+            <div class="mb-3">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required />
+            </div>
+            
+            <!-- 설명 입력 필드 -->
+            <div class="mb-3">
+                <label for="description" class="form-label">설명</label>
+                <textarea class="form-control" id="description" th:field="*{description}"></textarea>
+            </div>
+
+            <!-- 중요 체크박스 -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="important" th:field="*{important}" />
+                <label class="form-check-label" for="important">중요</label>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">수정 완료</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

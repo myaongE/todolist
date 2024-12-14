@@ -28,6 +28,13 @@ public class Todo {
 
     private boolean important = false; // 중요 여부 (기본값: false)
 
+    @PrePersist
+    public void onCreate() {
+        if (createdAt == null) {
+            createdAt = new Timestamp(System.currentTimeMillis());
+        }
+    }
+
     public enum Status {
         PENDING,
         COMPLETED
