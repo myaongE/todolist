@@ -63,45 +63,58 @@
 
 <br><br><br>
 
-<table border="1">
+<table>
   <h2>DB</h2>
   <thead>
     <tr>
       <th>key</th>
       <th>name</th>
       <th>설명</th>
+      <th>제약 조건</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>id</td>
-      <td>일정 번호</td>
-      <td>일정 등록시 +1하여 자동으로 번호 매김</td>
+      <td>고유 ID</td>
+      <td>각 일정 항목을 구별하는 고유 식별자</td>
+      <td>PK (Primary Key)</td>
     </tr>
     <tr>
       <td>title</td>
       <td>제목</td>
-      <td>Not null</td>
+      <td>일정의 제목을 입력하는 필드</td>
+      <td>NOT NULL</td>
     </tr>
     <tr>
       <td>description</td>
       <td>설명</td>
-      <td>일정에 대한 추가 설명을 입력</td>
+      <td>일정에 대한 추가 설명을 입력하는 필드</td>
+      <td>NULL 가능</td>
     </tr>
     <tr>
       <td>status</td>
       <td>상태</td>
-      <td>일정 상태 (예: 'PENDING', 'COMPLETED')</td>
+      <td>일정의 상태 (예: 'PENDING', 'COMPLETED')</td>
+      <td>NOT NULL, ENUM('PENDING', 'COMPLETED')</td>
     </tr>
     <tr>
       <td>createdAt</td>
       <td>생성일시</td>
-      <td>일정 생성시간</td>
+      <td>일정이 생성된 시간</td>
+      <td>DEFAULT CURRENT_TIMESTAMP</td>
+    </tr>
+    <tr>
+      <td>tag</td>
+      <td>태그</td>
+      <td>일정에 관련된 태그 (예: 업무, 개인 등)</td>
+      <td>NULL 가능</td>
     </tr>
     <tr>
       <td>important</td>
       <td>중요 여부</td>
       <td>일정의 중요도를 나타내는 필드 (true/false)</td>
+      <td>DEFAULT FALSE</td>
     </tr>
   </tbody>
 </table>
