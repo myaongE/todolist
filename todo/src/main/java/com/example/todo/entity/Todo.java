@@ -24,6 +24,10 @@ public class Todo {
 
     private Timestamp createdAt;
 
+    private String tag; // 태그 필드
+
+    private boolean important = false; // 중요 여부 (기본값: false)
+
     public enum Status {
         PENDING,
         COMPLETED

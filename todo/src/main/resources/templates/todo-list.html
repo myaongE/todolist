@@ -35,11 +35,16 @@
                 <div class="card-body">
                   <div class="d-flex flex-row align-items-center">
                     <form th:action="@{/todos}" th:object="${todo}" method="post" class="d-flex flex-row w-100">
-                        <input type="text" class="form-control form-control-lg me-3" th:field="*{title}" placeholder="일정을 추가해주세요." required />
-                        <textarea class="form-control form-control-lg me-3" th:field="*{description}" placeholder="설명을 입력하세요."></textarea>
-                        <input type="text" class="form-control form-control-lg me-3" th:field="*{tag}" placeholder="태그 (예: 업무, 개인)" />
-                        <button type="submit" class="btn btn-primary">등록</button>
-                    </form>
+					    <input type="text" class="form-control form-control-lg me-3" th:field="*{title}" placeholder="일정을 추가해주세요." required />
+					    <textarea class="form-control form-control-lg me-3" th:field="*{description}" placeholder="설명을 입력하세요."></textarea>
+					    <input type="text" class="form-control form-control-lg me-3" th:field="*{tag}" placeholder="태그 (예: 업무, 개인)" />
+					    <div class="form-check me-3">
+					        <input class="form-check-input" type="checkbox" th:field="*{important}" id="importantCheck" />
+					        <label class="form-check-label" for="importantCheck">중요</label>
+					    </div>
+					    <button type="submit" class="btn btn-primary">등록</button>
+					</form>
+
                   </div>
                 </div>
               </div>
